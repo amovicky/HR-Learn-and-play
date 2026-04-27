@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HR Play</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#F97316;--brand-l:#FFF7ED;--brand-d:#C2410C;
+  --purple:#7C3AED;--purple-l:#F5F3FF;
+  --teal:#0D9488;--teal-l:#F0FDFA;
+  --green:#16A34A;--green-l:#DCFCE7;
+  --red:#DC2626;--red-l:#FEE2E2;
+  --bg:#F8F7F4;--card:#FFFFFF;--bdr:#E5E3DE;--bdr2:#D4D2CC;
+  --t1:#1C1917;--t2:#78716C;--t3:#A8A29E;
+  --r:16px;--rs:10px;
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh}
+
+/* TOPBAR */
+.bar{background:var(--card);border-bottom:1px solid var(--bdr);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.logo{font-size:19px;font-weight:900;background:linear-gradient(135deg,var(--brand),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tabs{display:flex;gap:4px}
+.tab{background:none;border:none;padding:7px 15px;border-radius:var(--rs);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;color:var(--t2);transition:all .2s}
+.tab:hover{background:#F5F5F4;color:var(--t1)}
+.tab.on{background:var(--brand-l);color:var(--brand-d)}
+.ubadge{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--t2)}
+.av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--purple));display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:900}
+
+/* PAGE */
+.pg{display:none}.pg.on{display:block}
+
+/* REGISTER */
+.reg-wrap{min-height:calc(100vh - 56px);display:flex;align-items:center;justify-content:center;padding:2rem}
+.reg-card{background:var(--card);border:1px solid var(--bdr);border-radius:24px;padding:2.5rem;width:100%;max-width:420px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.07)}
+.hero{width:76px;height:76px;background:linear-gradient(135deg,#FFF7ED,#FDE8D0);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:36px}
+.reg-card h1{font-size:23px;font-weight:900;margin-bottom:8px}
+.reg-sub{font-size:14px;color:var(--t2);margin-bottom:1.75rem;line-height:1.65}
+.fg{text-align:left;margin-bottom:1rem}
+.fg label{display:block;font-size:11px;font-weight:900;color:var(--t2);margin-bottom:6px;letter-spacing:.07em;text-transform:uppercase}
+.fg input,.fg select{width:100%;padding:11px 14px;border-radius:var(--rs);border:1.5px solid var(--bdr);background:#FAFAF9;font-family:inherit;font-size:14px;font-weight:700;color:var(--t1);outline:none;transition:border-color .2s;-webkit-appearance:none}
+.fg input:focus,.fg select:focus{border-color:var(--brand);background:#fff}
+.btn-p{width:100%;padding:13px;background:linear-gradient(135deg,var(--brand),#FB923C);border:none;border-radius:var(--rs);color:#fff;font-family:inherit;font-size:15px;font-weight:900;cursor:pointer;transition:opacity .2s,transform .1s}
+.btn-p:hover{opacity:.91}.btn-p:active{transform:scale(.98)}
+
+/* HOME */
+.hw{padding:1.25rem 1.25rem 3rem;max-width:700px;margin:0 auto}
+.wbar{background:linear-gradient(135deg,var(--brand),#FB923C 50%,var(--purple));border-radius:var(--r);padding:1.4rem 1.6rem;color:#fff;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;position:relative;overflow:hidden}
+.wbar::before{content:'';position:absolute;right:-24px;top:-24px;width:130px;height:130px;background:rgba(255,255,255,.07);border-radius:50%}
+.wbar h2{font-size:18px;font-weight:900;margin-bottom:3px;position:relative}
+.wbar p{font-size:13px;opacity:.85;position:relative}
+.pts-b{text-align:center;background:rgba(255,255,255,.2);border-radius:13px;padding:10px 18px;position:relative;min-width:80px}
+.pts-b .n{font-size:32px;font-weight:900;line-height:1}
+.pts-b .l{font-size:11px;opacity:.85;font-weight:700;letter-spacing:.04em}
+.stitle{font-size:11px;font-weight:900;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin:1.5rem 0 .75rem}
+
+/* GAME CARDS */
+.gg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.gc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.25rem;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.gc:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.gc:active{transform:scale(.98)}
+.gci{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:10px}
+.gct{font-size:15px;font-weight:800;margin-bottom:4px}
+.gcd{font-size:12px;color:var(--t2);line-height:1.55}
+.gcp{display:inline-flex;align-items:center;margin-top:10px;font-size:12px;font-weight:800;padding:4px 11px;border-radius:99px}
+.done-b{position:absolute;top:10px;right:10px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--green-l);color:var(--green)}
+.gc-off{opacity:.6;pointer-events:none}
+.go .gci{background:var(--brand-l);color:var(--brand-d)}.go .gcp{background:var(--brand-l);color:var(--brand-d)}
+.gv .gci{background:var(--purple-l);color:var(--purple)}.gv .gcp{background:var(--purple-l);color:var(--purple)}
+.gt .gci{background:var(--teal-l);color:var(--teal)}.gt .gcp{background:var(--teal-l);color:var(--teal)}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rs);padding:1rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.sc .sv{font-size:28px;font-weight:900}.sc .sk{font-size:11px;color:var(--t2);font-weight:700;margin-top:3px}
+
+/* LEADERBOARD */
+.lw{padding:1.25rem;max-width:700px;margin:0 auto}
+.lb-note{background:#FFFBEB;border:1px solid #FDE68A;border-radius:var(--rs);padding:10px 14px;font-size:12px;font-weight:700;color:#92400E;margin-bottom:1rem;line-height:1.65}
+.lb-podium{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin:1rem 0 1.5rem}
+.pi{text-align:center}
+.pb{border-radius:14px 14px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;margin:0 auto;width:84px}
+.pb span{font-size:22px;font-weight:900;color:#fff}
+.p1 .pb{height:96px;background:linear-gradient(to top,#D97706,#FCD34D)}
+.p2 .pb{height:68px;background:linear-gradient(to top,#6B7280,#9CA3AF)}
+.p3 .pb{height:50px;background:linear-gradient(to top,#92400E,#B45309)}
+.pn{font-size:12px;font-weight:800;margin-top:6px;color:var(--t2)}
+.pp{font-size:15px;font-weight:900}
+.ll{display:flex;flex-direction:column;gap:8px}
+.lr{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rs);padding:11px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.lrank{width:30px;height:30px;border-radius:9px;background:#F5F5F4;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--t2);flex-shrink:0}
+.lr.me{border-color:var(--brand);background:var(--brand-l)}
+.lr.me .lrank{background:var(--brand);color:#fff}
+.li{flex:1}.li .ln{font-size:14px;font-weight:800}.li .ld{font-size:12px;color:var(--t2)}
+.lp{font-size:16px;font-weight:900;color:var(--brand-d)}
+.lb-loading{text-align:center;padding:2rem;color:var(--t2);font-size:14px;font-weight:700}
+
+/* MODAL */
+.mbg{position:fixed;inset:0;background:rgba(28,25,23,.5);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem;backdrop-filter:blur(2px)}
+.mc{background:var(--card);border-radius:22px;padding:1.75rem;width:100%;max-width:460px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.15)}
+.mt{font-size:18px;font-weight:900;margin-bottom:4px}
+.ms{font-size:13px;color:var(--t2);margin-bottom:1.25rem}
+.qt{font-size:15px;font-weight:700;margin-bottom:1rem;line-height:1.6}
+.ol{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem}
+.ob{background:#FAFAF9;border:1.5px solid var(--bdr);border-radius:var(--rs);padding:11px 15px;font-family:inherit;font-size:14px;font-weight:700;text-align:left;cursor:pointer;transition:all .15s;color:var(--t1);width:100%}
+.ob:hover{border-color:var(--purple);background:var(--purple-l)}
+.ob.ch{border-color:var(--purple);background:var(--purple-l)}
+.ob.ok{background:var(--green-l);border-color:var(--green);color:#14532D}
+.ob.ng{background:var(--red-l);border-color:var(--red);color:#7F1D1D}
+.ob.rv{background:var(--green-l);border-color:var(--green);color:#14532D}
+.rb{border-radius:var(--rs);padding:14px;font-size:13px;font-weight:700;line-height:1.65;display:none;margin-bottom:1rem}
+.rb.win{background:var(--green-l);color:#166534}
+.rb.lose{background:var(--red-l);color:#991B1B}
+.mbtns{display:flex;gap:8px}
+.bsec{flex:1;padding:11px;background:#F5F5F4;border:none;border-radius:var(--rs);font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;color:var(--t1)}
+.bsec:hover{background:#E7E5E4}
+.bcon{flex:2;padding:11px;background:var(--brand);border:none;border-radius:var(--rs);font-family:inherit;font-size:14px;font-weight:900;cursor:pointer;color:#fff}
+.bcon:hover{opacity:.88}.bcon:disabled{opacity:.5;cursor:not-allowed}
+.svopt{display:flex;align-items:center;gap:10px;background:#FAFAF9;border:1.5px solid var(--bdr);border-radius:var(--rs);padding:11px 15px;cursor:pointer;font-size:14px;font-weight:700;transition:all .15s;color:var(--t1)}
+.svopt:hover{border-color:var(--teal);background:var(--teal-l)}
+.svopt.sel{border-color:var(--teal);background:var(--teal-l)}
+.svopt input{accent-color:var(--teal);width:16px;height:16px;flex-shrink:0}
+
+/* ADMIN */
+.aw{padding:1.25rem;max-width:700px;margin:0 auto}
+.acard{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:2rem;max-width:360px;margin:3rem auto;box-shadow:0 4px 20px rgba(0,0,0,.07)}
+.info-box{border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1rem;font-size:13px;line-height:1.75}
+.info-blue{background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF}
+.info-green{background:#F0FDF4;border:1px solid #86EFAC;color:#14532D}
+.info-amber{background:#FFFBEB;border:1px solid #FDE68A;color:#92400E}
+.info-box strong{font-weight:900}
+.url-in{width:100%;padding:10px 14px;border-radius:var(--rs);border:1.5px solid var(--bdr);font-family:monospace;font-size:12px;color:var(--t1);background:#fff;outline:none;transition:border-color .2s;margin-top:6px;word-break:break-all}
+.url-in:focus{border-color:var(--teal)}
+.tw{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);margin-bottom:1rem}
+.atbl{width:100%;border-collapse:collapse;font-size:13px}
+.atbl th{background:#F5F5F4;padding:9px 13px;text-align:left;font-weight:800;color:var(--t2);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+.atbl td{padding:10px 13px;border-bottom:1px solid var(--bdr);font-weight:600}
+.atbl tr:last-child td{border-bottom:none}
+.ebar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+.bexp{padding:10px 20px;border:none;border-radius:var(--rs);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;transition:opacity .15s}
+.bexp:hover{opacity:.88}
+.bgrn{background:var(--teal);color:#fff}
+.bpur{background:var(--purple);color:#fff}
+.bred{background:#FEE2E2;color:#991B1B}
+.badge-ok{display:inline-block;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:800;background:var(--green-l);color:var(--green)}
+.badge-ng{display:inline-block;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:800;background:#FEF9C3;color:#854D0E}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle;margin-right:5px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:#1C1917;color:#fff;padding:12px 22px;border-radius:99px;font-size:14px;font-weight:700;z-index:999;transition:transform .3s ease;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* STATUS DOT */
+.sdot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}
+.sdot.ok{background:var(--green)}.sdot.ng{background:#F59E0B}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- TOPBAR -->
+  <div class="bar">
+    <div class="logo">HR Play 🎮</div>
+    <div class="tabs" id="navTabs" style="display:none">
+      <button class="tab on" onclick="go('home')">首頁</button>
+      <button class="tab" onclick="go('lb')">排行榜</button>
+      <button class="tab" onclick="go('admin')">管理員</button>
+    </div>
+    <div class="ubadge" id="ubadge" style="display:none">
+      <div class="av" id="av"></div>
+      <span id="uname"></span>
+    </div>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="pg on" id="pg-reg">
+    <div class="reg-wrap">
+      <div class="reg-card">
+        <div class="hero">🎮</div>
+        <h1>歡迎加入 HR Play！</h1>
+        <p class="reg-sub">完成每日任務、累積點數，和同仁一起挑戰排行榜！</p>
+        <div class="fg"><label>你的姓名</label>
+          <input id="rn" type="text" placeholder="例如：王小明"/></div>
+        <div class="fg"><label>所屬部門</label>
+          <select id="rd">
+            <option value="">請選擇部門</option>
+            <option>招募組</option><option>薪酬福利組</option>
+            <option>人才發展組</option><option>員工關係組</option><option>HR資訊組</option>
+          </select></div>
+        <button class="btn-p" onclick="doReg()">開始遊戲 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="pg" id="pg-home">
+    <div class="hw">
+      <div id="noUrlBanner" style="display:none;background:#FEF9C3;border:1px solid #FDE68A;border-radius:var(--rs);padding:10px 14px;font-size:12px;font-weight:700;color:#92400E;margin-bottom:1rem;line-height:1.65">
+        ⚙️ 管理員尚未完成 Power Automate 設定，點數僅存於本機。請 <span style="text-decoration:underline;cursor:pointer" onclick="go('admin')">前往管理員後台</span> 完成設定。
+      </div>
+      <div class="wbar">
+        <div><h2 id="wname">歡迎回來！</h2><p id="wsub">繼續累積點數吧</p></div>
+        <div class="pts-b"><div class="n" id="tpts">0</div><div class="l">總點數</div></div>
+      </div>
+      <div class="stitle">今日任務</div>
+      <div class="gg">
+        <div class="gc go" id="c-ci" onclick="doCI()">
+          <div class="gci">📅</div><div class="gct">每日簽到</div>
+          <div class="gcd">每個工作日完成簽到，持續累積出勤點數</div>
+          <div class="gcp">+5 點</div>
+        </div>
+        <div class="gc gv" id="c-qz" onclick="openQz()">
+          <div class="gci">🧠</div><div class="gct">HR 知識王</div>
+          <div class="gcd">每日一題 HR 法規知識挑戰，答對才得分</div>
+          <div class="gcp">+10 點</div>
+        </div>
+        <div class="gc gt" id="c-sv" onclick="openSv()">
+          <div class="gci">📝</div><div class="gct">意見問卷</div>
+          <div class="gcd">分享你對工作的想法，讓 HR 更了解你</div>
+          <div class="gcp">+8 點</div>
+        </div>
+      </div>
+      <div class="stitle">我的紀錄</div>
+      <div class="sg">
+        <div class="sc"><div class="sv" id="s-ci">0</div><div class="sk">累計簽到天數</div></div>
+        <div class="sc"><div class="sv" id="s-qz">0</div><div class="sk">問答答對數</div></div>
+        <div class="sc"><div class="sv" id="s-sv">0</div><div class="sk">問卷完成數</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div class="pg" id="pg-lb">
+    <div class="lw">
+      <div class="lb-note">📡 排行榜資料即時從 SharePoint 讀取，每次進入此頁自動更新。</div>
+      <div class="stitle" style="margin-top:0">本期排行榜</div>
+      <div class="lb-podium" id="lbPodium"></div>
+      <div class="ll" id="lbList"><div class="lb-loading">載入中...</div></div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="pg" id="pg-admin">
+    <div class="aw" id="adminWrap"></div>
+  </div>
+</div>
+
+<div id="MC"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+//  CONFIG — 管理員填入後即可運作
+// ═══════════════════════════════════════════
+// Power Automate Webhook URL（寫入用）
+// 從 localStorage 讀取，在後台設定
+function getWriteUrl(){ return localStorage.getItem('pa_write_url')||''; }
+function setWriteUrl(u){ localStorage.setItem('pa_write_url',u); }
+
+// Power Automate HTTP GET URL（讀取排行榜用）
+function getReadUrl(){ return localStorage.getItem('pa_read_url')||''; }
+function setReadUrl(u){ localStorage.setItem('pa_read_url',u); }
+
+const ADMIN_PWD = 'hr2024';
+
+// ═══════════════════════════════════════════
+//  QUESTIONS
+// ═══════════════════════════════════════════
+const QS = [
+  {q:'每週正常工時上限為幾小時？',opts:['40小時','44小時','48小時','56小時'],ans:0,exp:'依勞基法第30條，每週正常工時不得超過40小時。'},
+  {q:'雇主應於勞工到職幾日內辦理勞保加保？',opts:['當日','3日內','7日內','30日內'],ans:0,exp:'依勞保條例規定，雇主應於員工到職當天辦理加保。'},
+  {q:'年資滿1年以上未滿3年，特休假天數為？',opts:['7天','10天','14天','3天'],ans:0,exp:'依勞基法第38條，年資1年以上未滿3年特休為7天。'},
+  {q:'勞工退休金雇主每月應提繳薪資的多少比例？',opts:['3%','6%','8%','12%'],ans:1,exp:'依勞工退休金條例，雇主應按月提繳勞工薪資6%。'},
+  {q:'育嬰留職停薪最長可申請幾年？',opts:['6個月','1年','2年','3年'],ans:2,exp:'依性別工作平等法，育嬰留職停薪最長可申請2年。'},
+  {q:'職場性騷擾申訴，雇主應於幾日內完成調查？',opts:['30日','60日','90日','無規定'],ans:1,exp:'依性別工作平等法，雇主應在60日內完成調查。'},
+  {q:'勞工資遣費計算基準，年資每滿一年給予幾個月平均工資？',opts:['0.5個月','1個月','1.5個月','2個月'],ans:0,exp:'依勞退條例，資遣費為每服務滿一年給0.5個月平均工資。'},
+];
+const SVS = [
+  {q:'你對哪個 HR 工作領域最有興趣？',opts:['招募與人才尋訪','薪酬福利設計','教育訓練與人才發展','員工關係與組織文化','HR 數位轉型'],multi:false},
+  {q:'你覺得目前工作中最具挑戰的部分是？',opts:['大量行政庶務','跨部門溝通協調','法規遵循與更新','數據分析報告','人才留才'],multi:false},
+  {q:'你希望未來加強哪方面能力？（可複選）',opts:['勞動法規研習','HRBP 業務夥伴','Excel / 工具應用','溝通與談判','領導力培訓'],multi:true},
+  {q:'你認為團隊最需要改善的是？',opts:['流程自動化','跨部門合作','員工福利設計','內部溝通透明度','教育訓練資源'],multi:false},
+];
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+let S = {}, adminOK = false, curQ = null, curSv = null, selOpt = null, selSv = [];
+
+function load(){ try{ S = JSON.parse(localStorage.getItem('hrp3')||'{}'); }catch(e){ S={}; } }
+function save(){ localStorage.setItem('hrp3', JSON.stringify(S)); }
+function today(){ return new Date().toISOString().slice(0,10); }
+function isWD(){ const d=new Date().getDay(); return d>=1&&d<=5; }
+function greet(){ const h=new Date().getHours(); return h<12?'早安':h<18?'午安':'晚安'; }
+
+// ═══════════════════════════════════════════
+//  POWER AUTOMATE 串接
+// ═══════════════════════════════════════════
+async function pushRecord(payload){
+  const url = getWriteUrl();
+  if(!url) return false;
+  try{
+    // Power Automate HTTP 觸發器接受 POST JSON
+    const r = await fetch(url, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name: S.name,
+        dept: S.dept,
+        action: payload.type,
+        points: payload.pts,
+        note: payload.note || '',
+        date: today(),
+        totalPts: S.pts,
+        timestamp: new Date().toISOString()
+      })
+    });
+    return r.ok || r.status === 202; // Power Automate 回傳 202
+  }catch(e){ console.warn('PA write error:',e); return false; }
+}
+
+async function fetchLeaderboard(){
+  const url = getReadUrl();
+  if(!url) return null;
+  try{
+    const r = await fetch(url);
+    if(!r.ok) return null;
+    const data = await r.json();
+    // 預期格式：[{name, dept, pts}, ...]
+    return Array.isArray(data) ? data : (data.value || null);
+  }catch(e){ console.warn('PA read error:',e); return null; }
+}
+
+// ═══════════════════════════════════════════
+//  REGISTER
+// ═══════════════════════════════════════════
+function doReg(){
+  const name=document.getElementById('rn').value.trim();
+  const dept=document.getElementById('rd').value;
+  if(!name||!dept){toast('請填寫姓名與部門 ⚠️');return;}
+  S={name,dept,pts:0,ciDays:0,qzOk:0,svDone:0,lastCI:'',lastQZ:'',lastSV:'',log:[]};
+  save(); goHome();
+}
+
+// ═══════════════════════════════════════════
+//  NAV
+// ═══════════════════════════════════════════
+function goHome(){
+  document.getElementById('navTabs').style.display='flex';
+  document.getElementById('ubadge').style.display='flex';
+  document.getElementById('av').textContent=S.name.charAt(0);
+  document.getElementById('uname').textContent=S.name;
+  go('home');
+}
+function go(pg){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',['home','lb','admin'][i]===pg));
+  document.getElementById('pg-'+pg).classList.add('on');
+  if(pg==='home') renderHome();
+  if(pg==='lb') renderLB();
+  if(pg==='admin') renderAdmin();
+}
+
+// ═══════════════════════════════════════════
+//  HOME
+// ═══════════════════════════════════════════
+function renderHome(){
+  document.getElementById('wname').textContent=greet()+'，'+S.name+'！';
+  document.getElementById('wsub').textContent=S.dept+' · 今日也要加油 🔥';
+  document.getElementById('tpts').textContent=S.pts;
+  document.getElementById('s-ci').textContent=S.ciDays;
+  document.getElementById('s-qz').textContent=S.qzOk;
+  document.getElementById('s-sv').textContent=S.svDone;
+  document.getElementById('noUrlBanner').style.display=getWriteUrl()?'none':'block';
+  ['ci','qz','sv'].forEach(id=>{
+    const c=document.getElementById('c-'+id);
+    c.classList.remove('gc-off');
+    const b=c.querySelector('.done-b');
+    if(b)b.remove();
+  });
+  if(S.lastCI===today()) markDone('c-ci');
+  if(S.lastQZ===today()) markDone('c-qz');
+  if(S.lastSV===today()) markDone('c-sv');
+}
+function markDone(id){
+  const c=document.getElementById(id);
+  c.classList.add('gc-off');
+  if(!c.querySelector('.done-b')){
+    const b=document.createElement('div');
+    b.className='done-b';b.textContent='✓ 已完成';c.appendChild(b);
+  }
+}
+
+// ═══════════════════════════════════════════
+//  CHECKIN
+// ═══════════════════════════════════════════
+async function doCI(){
+  if(S.lastCI===today()){toast('今天已簽到過了！');return;}
+  if(!isWD()){toast('假日不計入簽到 😊');return;}
+  S.pts+=5; S.ciDays+=1; S.lastCI=today();
+  const log={type:'每日簽到',pts:5,note:'',date:today(),time:new Date().toLocaleString('zh-TW')};
+  S.log.push(log); save();
+  const ok = await pushRecord(log);
+  renderHome();
+  toast(ok?'簽到成功！+5 點 🎉 已同步':'簽到成功！+5 點 🎉（離線模式）');
+}
+
+// ═══════════════════════════════════════════
+//  QUIZ
+// ═══════════════════════════════════════════
+function openQz(){
+  if(S.lastQZ===today()){toast('今日問答已完成！');return;}
+  curQ=QS[new Date().getDate()%QS.length]; selOpt=null;
+  modal(`<div class="mt">🧠 HR 知識王</div>
+    <div class="ms">答對本題可獲得 <strong>10 點</strong></div>
+    <div class="qt">${curQ.q}</div>
+    <div class="ol">${curQ.opts.map((o,i)=>`<button class="ob" onclick="selQ(${i})" id="q${i}">${o}</button>`).join('')}</div>
+    <div class="rb" id="qr"></div>
+    <div class="mbtns">
+      <button class="bsec" onclick="closeM()">關閉</button>
+      <button class="bcon" id="qbtn" onclick="subQz()">確認作答</button>
+    </div>`);
+}
+function selQ(i){
+  selOpt=i;
+  document.querySelectorAll('.ob').forEach((b,j)=>b.classList.toggle('ch',j===i));
+}
+async function subQz(){
+  if(selOpt===null){toast('請選擇一個答案');return;}
+  const ok=selOpt===curQ.ans;
+  document.querySelectorAll('.ob').forEach((b,i)=>{
+    b.disabled=true; b.classList.remove('ch');
+    if(i===curQ.ans)b.classList.add('rv');
+    else if(i===selOpt&&!ok)b.classList.add('ng');
+  });
+  const rb=document.getElementById('qr');
+  rb.style.display='block';
+  const pts=ok?10:0;
+  rb.className='rb '+(ok?'win':'lose');
+  rb.innerHTML=(ok?'🎉 答對了！+10 點':'😢 答錯了！')+'<br><small>'+curQ.exp+'</small>';
+  if(ok){S.pts+=10;S.qzOk+=1;}
+  S.lastQZ=today();
+  const log={type:'HR知識問答',pts,note:ok?'答對':'答錯',date:today(),time:new Date().toLocaleString('zh-TW')};
+  S.log.push(log); save();
+  await pushRecord(log);
+  const btn=document.getElementById('qbtn');
+  btn.textContent='完成'; btn.onclick=closeM;
+  renderHome();
+}
+
+// ═══════════════════════════════════════════
+//  SURVEY
+// ═══════════════════════════════════════════
+function openSv(){
+  if(S.lastSV===today()){toast('今日問卷已完成！');return;}
+  curSv=SVS[new Date().getDate()%SVS.length]; selSv=[];
+  modal(`<div class="mt">📝 意見問卷</div>
+    <div class="ms">完成問卷可獲得 <strong>8 點</strong>，幫助 HR 更了解大家</div>
+    <div class="qt">${curSv.q}</div>
+    <div class="ol">${curSv.opts.map((o,i)=>`<label class="svopt" id="sv${i}">
+      <input type="${curSv.multi?'checkbox':'radio'}" name="sv" value="${i}" onchange="togSv(${i})"/> ${o}
+    </label>`).join('')}</div>
+    <div class="mbtns">
+      <button class="bsec" onclick="closeM()">取消</button>
+      <button class="bcon" onclick="subSv()">送出回答</button>
+    </div>`);
+}
+function togSv(i){
+  if(curSv.multi){ selSv.includes(i)?selSv=selSv.filter(x=>x!==i):selSv.push(i); }
+  else selSv=[i];
+  document.querySelectorAll('.svopt').forEach((el,j)=>el.classList.toggle('sel',selSv.includes(j)));
+}
+async function subSv(){
+  if(!selSv.length){toast('請選擇至少一個選項');return;}
+  const ans=selSv.map(i=>curSv.opts[i]).join('、');
+  S.pts+=8; S.svDone+=1; S.lastSV=today();
+  const log={type:'意見問卷',pts:8,note:ans,date:today(),time:new Date().toLocaleString('zh-TW')};
+  S.log.push(log); save();
+  await pushRecord(log);
+  closeM(); renderHome();
+  toast('謝謝你的回饋！+8 點 🎉');
+}
+
+// ═══════════════════════════════════════════
+//  LEADERBOARD
+// ═══════════════════════════════════════════
+async function renderLB(){
+  document.getElementById('lbPodium').innerHTML='';
+  document.getElementById('lbList').innerHTML='<div class="lb-loading">⏳ 從 SharePoint 載入中...</div>';
+
+  let lb = await fetchLeaderboard();
+
+  if(!lb){
+    // 沒有讀取 URL 或讀取失敗，顯示本機資料
+    lb=[{name:S.name,dept:S.dept,pts:S.pts}];
+    document.querySelector('.lb-note').innerHTML='⚠️ 無法讀取 SharePoint 資料，顯示本機資料。請管理員設定讀取 URL。';
+  } else {
+    // 確保自己在名單中（以最高分為準）
+    const mi=lb.findIndex(r=>r.name===S.name);
+    if(mi===-1) lb.push({name:S.name,dept:S.dept,pts:S.pts});
+    else lb[mi].pts=Math.max(Number(lb[mi].pts),S.pts);
+  }
+
+  lb.sort((a,b)=>Number(b.pts)-Number(a.pts));
+  const top=lb.slice(0,3);
+  const order=[1,0,2]; const medals=['🥇','🥈','🥉'];
+  document.getElementById('lbPodium').innerHTML=order.map(i=>{
+    if(!top[i])return'';
+    return`<div class="pi p${i+1}"><div class="pb"><span>${medals[i]}</span></div>
+      <div class="pn">${top[i].name}</div><div class="pp">${top[i].pts}點</div></div>`;
+  }).join('');
+  document.getElementById('lbList').innerHTML=lb.map((u,i)=>{
+    const me=u.name===S.name;
+    return`<div class="lr${me?' me':''}">
+      <div class="lrank">${i+1}</div>
+      <div class="li"><div class="ln">${u.name}${me?' （我）':''}</div><div class="ld">${u.dept}</div></div>
+      <div class="lp">${u.pts} 點</div></div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+//  ADMIN
+// ═══════════════════════════════════════════
+function renderAdmin(){
+  const w=document.getElementById('adminWrap');
+  if(!adminOK){
+    w.innerHTML=`<div class="acard">
+      <h2 style="font-size:20px;font-weight:900;margin-bottom:6px">🔐 管理員後台</h2>
+      <p style="font-size:13px;color:var(--t2);margin-bottom:1.5rem">輸入密碼進入管理介面</p>
+      <div class="fg"><label>管理員密碼</label>
+        <input type="password" id="apwd" placeholder="輸入密碼" onkeydown="if(event.key==='Enter')chkAdmin()"/></div>
+      <button class="btn-p" onclick="chkAdmin()">登入</button>
+    </div>`;
+    return;
+  }
+
+  const wu=getWriteUrl(), ru=getReadUrl();
+  w.innerHTML=`
+    <h2 style="font-size:20px;font-weight:900;margin-bottom:4px">⚙️ 管理員後台</h2>
+    <p style="font-size:13px;color:var(--t2);margin-bottom:1.25rem">登入中：${S.name}</p>
+
+    <div class="stitle" style="margin-top:0">Power Automate 串接設定</div>
+    <div class="info-box info-blue">
+      <strong>📌 設定說明（一次設定，永久生效）</strong><br/><br/>
+      <strong>Step 1 — 建立「寫入」流程（記錄點數）</strong><br/>
+      1. 開啟 Power Automate → 建立「即時雲端流程」<br/>
+      2. 觸發器選「當收到 HTTP 要求時」<br/>
+      3. 在 JSON 結構描述貼上：<br/>
+      <code style="font-size:11px;background:rgba(0,0,0,.06);padding:4px 8px;border-radius:6px;display:block;margin:6px 0;word-break:break-all">{"name":"","dept":"","action":"","points":0,"note":"","date":"","totalPts":0,"timestamp":""}</code>
+      4. 加入動作：「SharePoint — 建立項目」，填入對應欄位<br/>
+      5. 儲存流程後，複製觸發器的 HTTP POST URL 貼到下方<br/><br/>
+      <strong>Step 2 — 建立「讀取」流程（排行榜）</strong><br/>
+      1. 再建立一個即時雲端流程，觸發器同樣選「HTTP 要求」（方法改 GET）<br/>
+      2. 加入動作：「SharePoint — 取得項目」（依總點數排序）<br/>
+      3. 加入回應動作，回傳 JSON 格式的名單陣列<br/>
+      4. 複製該流程的 URL 貼到下方<br/>
+    </div>
+
+    <div class="fg" style="margin-bottom:8px">
+      <label>寫入 Webhook URL（POST）<span class="sdot ${wu?'ok':'ng'}"></span>${wu?'<span class="badge-ok">已設定</span>':'<span class="badge-ng">未設定</span>'}</label>
+      <input class="url-in" id="wurl" type="url" value="${wu}" placeholder="https://prod-xx.westus.logic.azure.com/workflows/..."/>
+    </div>
+    <div class="fg" style="margin-bottom:1rem">
+      <label>讀取 URL（GET，排行榜用）<span class="sdot ${ru?'ok':'ng'}"></span>${ru?'<span class="badge-ok">已設定</span>':'<span class="badge-ng">未設定</span>'}</label>
+      <input class="url-in" id="rurl" type="url" value="${ru}" placeholder="https://prod-xx.westus.logic.azure.com/workflows/..."/>
+    </div>
+    <div class="ebar" style="margin-bottom:1.5rem">
+      <button class="bexp bgrn" onclick="saveUrls()">💾 儲存網址設定</button>
+      <button class="bexp" style="background:#6B7280;color:#fff" onclick="testWrite()">🔗 測試寫入連線</button>
+    </div>
+
+    <div class="stitle">我的活動紀錄</div>
+    <div class="tw">
+      <table class="atbl">
+        <thead><tr><th>時間</th><th>活動類型</th><th>點數</th><th>備註</th></tr></thead>
+        <tbody>${(S.log||[]).slice().reverse().map(l=>`<tr>
+          <td>${l.time}</td><td>${l.type}</td>
+          <td style="font-weight:900;color:var(--brand-d)">+${l.pts}</td>
+          <td style="color:var(--t2)">${l.note||'—'}</td>
+        </tr>`).join('')||'<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--t3)">尚無紀錄</td></tr>'}</tbody>
+      </table>
+    </div>
+
+    <div class="info-box info-green">
+      <strong>✅ 管理員如何查看所有人資料</strong><br/>
+      Power Automate 已自動將每筆活動寫入 SharePoint 清單。<br/>
+      直接開啟 SharePoint 清單 → 點選「匯出至 Excel」即可取得所有人完整紀錄，無需任何人手動操作。
+    </div>
+    <div class="ebar">
+      <button class="bexp bpur" onclick="exportPersonal()">📥 匯出個人 Excel</button>
+      <button class="bexp bred" onclick="()=>{adminOK=false;renderAdmin();}">登出後台</button>
+    </div>`;
+}
+
+function saveUrls(){
+  setWriteUrl(document.getElementById('wurl').value.trim());
+  setReadUrl(document.getElementById('rurl').value.trim());
+  toast('設定已儲存！');
+  renderAdmin();
+  renderHome();
+}
+
+async function testWrite(){
+  const url=getWriteUrl();
+  if(!url){toast('請先填入寫入 URL');return;}
+  toast('測試中...');
+  const ok=await pushRecord({type:'連線測試',pts:0,note:'admin test'});
+  toast(ok?'✅ 連線成功！Power Automate 正常運作':'❌ 連線失敗，請確認 URL 是否正確');
+}
+
+function chkAdmin(){
+  if(document.getElementById('apwd').value===ADMIN_PWD){adminOK=true;renderAdmin();}
+  else toast('密碼錯誤！');
+}
+
+function exportPersonal(){
+  const summary=[
+    ['HR Play 個人成績單'],
+    ['姓名','部門','總點數','累計簽到','問答答對','問卷完成','匯出時間'],
+    [S.name,S.dept,S.pts,S.ciDays,S.qzOk,S.svDone,new Date().toLocaleString('zh-TW')]
+  ];
+  const logs=[['時間','活動類型','點數','備註'],...(S.log||[]).map(l=>[l.time,l.type,l.pts,l.note||''])];
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(summary),'個人總覽');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(logs),'活動紀錄');
+  XLSX.writeFile(wb,`HRPlay_${S.name}_${today()}.xlsx`);
+}
+
+// ═══════════════════════════════════════════
+//  MODAL / TOAST
+// ═══════════════════════════════════════════
+function modal(h){
+  document.getElementById('MC').innerHTML=
+    `<div class="mbg" onclick="if(event.target===this)closeM()"><div class="mc">${h}</div></div>`;
+}
+function closeM(){ document.getElementById('MC').innerHTML=''; }
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ═══════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════
+load();
+if(S.name) goHome();
+</script>
+</body>
+</html>
