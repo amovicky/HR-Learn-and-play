@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HR 訓練激勵系統</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;700;900&family=Syne:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0D0D12;--paper:#F4F1EB;--gold:#C8A84B;--gold-lt:#E8D08A;
+  --violet:#2D1B69;--violet-lt:#6B4FBB;--cream:#FAF8F3;--muted:#8A8578;--accent:#E85D3A;
+  --f-display:'Unbounded',sans-serif;--f-ui:'Syne',sans-serif;--f-body:'DM Sans',sans-serif;
+  --bg:#fff;--bg2:#f6f6f7;--bg3:#eeeff1;--bd:#e2e3e6;--bd2:#caccd0;
+  --tx:#18181b;--tx2:#52525b;--tx3:#a1a1aa;
+  --p50:#EEEDFE;--p200:#AFA9EC;--p600:#534AB7;--p800:#3C3489;
+  --t50:#E1F5EE;--t600:#0F6E56;--t800:#085041;
+  --a50:#FAEEDA;--a600:#854F0B;--a800:#633806;
+  --c50:#FAECE7;--c600:#993C1D;--g50:#EAF3DE;--g600:#3B6D11;
+  --r4:4px;--r8:8px;--r12:12px;--r16:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--f-body);overflow-x:hidden}
+
+/* ════════════════════════════════════
+   LANDING PAGE
+════════════════════════════════════ */
+#landing{background:var(--ink);color:var(--paper)}
+#landing *{font-family:inherit}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:.5}
+
+/* Hero */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;padding:0 clamp(1.5rem,5vw,5rem);overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;animation:drift 12s ease-in-out infinite alternate}
+.orb1{width:600px;height:600px;background:radial-gradient(circle,rgba(45,27,105,.7) 0%,transparent 70%);top:-200px;right:-150px;animation-delay:0s}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(200,168,75,.35) 0%,transparent 70%);bottom:-100px;left:-100px;animation-delay:-4s}
+.orb3{width:300px;height:300px;background:radial-gradient(circle,rgba(232,93,58,.25) 0%,transparent 70%);top:40%;left:30%;animation-delay:-8s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(30px,-40px) scale(1.08)}}
+
+.lnav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:1.75rem 0;border-bottom:1px solid rgba(244,241,235,.08)}
+.lnav-logo{font-family:var(--f-display);font-size:13px;font-weight:700;letter-spacing:.12em;color:var(--gold);text-transform:uppercase}
+.lnav-badge{font-size:11px;padding:5px 14px;border:1px solid rgba(200,168,75,.4);border-radius:99px;color:var(--gold-lt);font-weight:300;letter-spacing:.08em}
+
+.hero-body{position:relative;z-index:5;flex:1;display:flex;flex-direction:column;justify-content:center;padding:5rem 0 3rem;max-width:900px}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:2rem;opacity:0;animation:fadeUp .6s .2s ease forwards}
+.eyebrow-line{width:32px;height:1px;background:var(--gold)}
+.hero-h1{font-family:var(--f-display);font-size:clamp(2.8rem,7vw,5.5rem);font-weight:900;line-height:1.0;letter-spacing:-.02em;opacity:0;animation:fadeUp .7s .35s ease forwards}
+.hero-h1 em{font-style:normal;color:transparent;-webkit-text-stroke:1.5px var(--gold);display:block}
+.hero-desc{max-width:520px;margin-top:2rem;font-size:17px;font-weight:300;line-height:1.7;color:rgba(244,241,235,.65);opacity:0;animation:fadeUp .7s .5s ease forwards}
+.hero-cta{display:flex;gap:14px;margin-top:3rem;flex-wrap:wrap;opacity:0;animation:fadeUp .7s .65s ease forwards}
+
+.btn-main{font-family:var(--f-body);font-size:14px;font-weight:500;letter-spacing:.04em;padding:14px 32px;border-radius:4px;background:var(--gold);color:var(--ink);border:none;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.btn-main::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);transform:translateX(-110%) skewX(-15deg);transition:transform .35s ease}
+.btn-main:hover::after{transform:translateX(110%) skewX(-15deg)}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(200,168,75,.35)}
+.btn-ghost-l{font-family:var(--f-body);font-size:14px;font-weight:400;letter-spacing:.04em;padding:14px 32px;border-radius:4px;background:transparent;color:var(--paper);border:1px solid rgba(244,241,235,.2);cursor:pointer;transition:all .2s}
+.btn-ghost-l:hover{border-color:rgba(244,241,235,.5);background:rgba(244,241,235,.05)}
+
+.floating-cards{position:absolute;right:clamp(1rem,4vw,4rem);top:50%;transform:translateY(-45%);display:flex;flex-direction:column;gap:14px;z-index:5;opacity:0;animation:fadeLeft .8s .8s ease forwards}
+.fcard{background:rgba(244,241,235,.05);border:1px solid rgba(244,241,235,.1);backdrop-filter:blur(20px);border-radius:12px;padding:16px 20px;min-width:220px;transition:transform .3s,border-color .3s}
+.fcard:hover{transform:translateX(-6px);border-color:rgba(200,168,75,.3)}
+.fcard-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.fcard-icon{font-size:18px}
+.fcard-label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.fcard-val{font-family:var(--f-display);font-size:22px;font-weight:700;color:var(--paper)}
+.fcard-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.fcard-bar{height:3px;background:rgba(244,241,235,.1);border-radius:99px;margin-top:12px;overflow:hidden}
+.fcard-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--accent))}
+.fcard.accent-card{border-color:rgba(200,168,75,.25);background:rgba(200,168,75,.07)}
+
+.ticker-wrap{position:relative;z-index:5;border-top:1px solid rgba(244,241,235,.08);border-bottom:1px solid rgba(244,241,235,.08);padding:14px 0;overflow:hidden;background:var(--ink)}
+.ticker-track{display:flex;gap:3rem;white-space:nowrap;animation:ticker 30s linear infinite}
+.ticker-item{display:flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex-shrink:0}
+.ticker-dot{width:4px;height:4px;border-radius:50%;background:var(--gold)}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* Features */
+.features{background:var(--cream);color:var(--ink);padding:clamp(4rem,8vw,8rem) clamp(1.5rem,5vw,5rem);position:relative;overflow:hidden}
+.features::before{content:'GROW';position:absolute;font-family:var(--f-display);font-size:clamp(6rem,15vw,14rem);font-weight:900;color:rgba(13,13,18,.04);right:-2rem;top:50%;transform:translateY(-50%);letter-spacing:-.04em;pointer-events:none;user-select:none}
+.features-header{margin-bottom:4rem}
+.feat-eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--violet-lt);font-weight:500;margin-bottom:1rem}
+.feat-h2{font-family:var(--f-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.15;color:var(--ink);max-width:480px}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2px;background:rgba(13,13,18,.08);border:1px solid rgba(13,13,18,.08);border-radius:16px;overflow:hidden}
+.feat-item{background:var(--cream);padding:2.5rem;transition:background .2s;position:relative}
+.feat-item:hover{background:#fff}
+.feat-num{font-family:var(--f-display);font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.15em;margin-bottom:1.25rem}
+.feat-icon-wrap{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:1.25rem}
+.feat-title{font-family:var(--f-display);font-size:15px;font-weight:700;margin-bottom:10px;line-height:1.3}
+.feat-desc{font-size:14px;font-weight:300;line-height:1.7;color:var(--muted)}
+
+/* Stats */
+.stats-strip{background:var(--violet);padding:4rem clamp(1.5rem,5vw,5rem);display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;position:relative;overflow:hidden}
+.stats-strip::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(200,168,75,.15) 0%,transparent 60%)}
+.stat-item{position:relative;z-index:1}
+.stat-num{font-family:var(--f-display);font-size:clamp(2.5rem,5vw,4rem);font-weight:900;color:var(--gold);line-height:1;margin-bottom:8px}
+.stat-label{font-size:13px;font-weight:300;color:rgba(244,241,235,.65);letter-spacing:.04em}
+.stat-divider{width:32px;height:2px;background:var(--gold);margin-bottom:12px;opacity:.5}
+
+/* How */
+.how{background:var(--ink);padding:clamp(4rem,8vw,8rem) clamp(1.5rem,5vw,5rem);position:relative}
+.how-header{text-align:center;margin-bottom:4rem}
+.how-eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:1rem}
+.how-h2{font-family:var(--f-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;color:var(--paper)}
+.steps{display:flex;gap:0;position:relative;flex-wrap:wrap;justify-content:center}
+.steps::before{content:'';position:absolute;top:40px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(200,168,75,.3),rgba(200,168,75,.3),transparent);pointer-events:none}
+.step{flex:1;min-width:180px;max-width:220px;padding:0 1rem;text-align:center;position:relative}
+.step-num{width:80px;height:80px;border-radius:50%;border:1px solid rgba(200,168,75,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-family:var(--f-display);font-size:24px;font-weight:900;color:var(--gold);background:rgba(200,168,75,.05);position:relative;z-index:1;transition:all .3s}
+.step:hover .step-num{background:rgba(200,168,75,.15);border-color:var(--gold);transform:scale(1.05)}
+.step-title{font-family:var(--f-display);font-size:13px;font-weight:700;letter-spacing:.04em;margin-bottom:10px;color:var(--paper)}
+.step-desc{font-size:13px;font-weight:300;color:rgba(244,241,235,.5);line-height:1.7}
+
+/* Quote */
+.quote-section{background:var(--paper);color:var(--ink);padding:clamp(4rem,8vw,7rem) clamp(1.5rem,5vw,5rem);text-align:center;position:relative;overflow:hidden}
+.quote-bg-txt{position:absolute;font-family:var(--f-display);font-size:clamp(5rem,18vw,16rem);font-weight:900;color:rgba(13,13,18,.04);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;user-select:none;letter-spacing:-.04em}
+.quote-icon{font-size:2.5rem;margin-bottom:1.5rem}
+.quote-text{font-family:var(--f-display);font-size:clamp(1.3rem,3vw,2rem);font-weight:300;line-height:1.5;max-width:700px;margin:0 auto 2rem;color:var(--ink);position:relative;z-index:1}
+.quote-text strong{font-weight:700;color:var(--violet)}
+.quote-author{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);position:relative;z-index:1}
+
+/* CTA */
+.cta-section{background:var(--ink);padding:clamp(4rem,8vw,7rem) clamp(1.5rem,5vw,5rem);text-align:center;position:relative;overflow:hidden}
+.cta-orb{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(45,27,105,.5) 0%,transparent 70%);left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}
+.cta-h2{font-family:var(--f-display);font-size:clamp(2rem,5vw,4rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;position:relative;z-index:1;color:var(--paper)}
+.cta-h2 span{color:var(--gold)}
+.cta-sub{font-size:16px;font-weight:300;color:rgba(244,241,235,.6);margin-bottom:2.5rem;position:relative;z-index:1}
+.cta-btn-wrap{position:relative;z-index:1;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn-main-lg{font-family:var(--f-body);font-size:15px;font-weight:500;letter-spacing:.04em;padding:16px 40px;border-radius:4px;background:var(--gold);color:var(--ink);border:none;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.btn-main-lg::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);transform:translateX(-110%) skewX(-15deg);transition:transform .35s ease}
+.btn-main-lg:hover::after{transform:translateX(110%) skewX(-15deg)}
+.btn-main-lg:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(200,168,75,.35)}
+
+footer{background:rgba(0,0,0,.5);border-top:1px solid rgba(244,241,235,.06);padding:2rem clamp(1.5rem,5vw,5rem);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.footer-logo{font-family:var(--f-display);font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.15em}
+.footer-copy{font-size:12px;color:var(--muted)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeLeft{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ════════════════════════════════════
+   APP UI
+════════════════════════════════════ */
+.screen{display:none}
+.screen.on{display:block}
+
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:var(--bg2)}
+.login-box{width:100%;max-width:400px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r16);padding:2rem;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.login-logo{font-family:var(--f-ui);font-size:22px;font-weight:700;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--tx2);margin-bottom:1.5rem}
+.tab-row{display:flex;gap:4px;background:var(--bg2);border-radius:var(--r8);padding:4px;margin-bottom:1.25rem}
+.tab-btn{flex:1;padding:7px;border:none;border-radius:var(--r8);background:transparent;font-family:var(--f-body);font-size:13px;font-weight:500;color:var(--tx2);cursor:pointer;transition:all .15s}
+.tab-btn.on{background:var(--bg);color:var(--p600);border:1px solid var(--bd2)}
+.user-list{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem;max-height:240px;overflow-y:auto}
+.user-btn{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r12);cursor:pointer;transition:all .12s;width:100%}
+.user-btn:hover{border-color:var(--p600);background:var(--p50)}
+.u-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.u-av.admin{background:#fef3c7;color:#92400e}
+.u-av.user{background:var(--p50);color:var(--p800)}
+.u-name{font-size:14px;font-weight:500;text-align:left}
+.u-meta{font-size:11px;color:var(--tx3);text-align:left}
+.role-tag{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600;margin-left:auto;flex-shrink:0}
+.role-tag.admin{background:#fef3c7;color:#92400e}
+.role-tag.user{background:var(--p50);color:var(--p800)}
+.divider2{display:flex;align-items:center;gap:10px;margin:1rem 0}
+.div-line2{flex:1;height:1px;background:var(--bd)}
+.div-txt2{font-size:12px;color:var(--tx3)}
+.fi{width:100%;padding:8px 10px;font-size:13px;font-family:var(--f-body);background:var(--bg);border:1px solid var(--bd2);border-radius:var(--r8);color:var(--tx);outline:none;margin-bottom:8px;display:block}
+.fi:focus{border-color:var(--p600)}
+.fs{width:100%;padding:8px 10px;font-size:13px;font-family:var(--f-body);background:var(--bg);border:1px solid var(--bd2);border-radius:var(--r8);color:var(--tx);outline:none;margin-bottom:8px;display:block}
+.adm-wrap{position:relative}
+.adm-wrap .fi{padding-right:36px;margin-bottom:0}
+.eye-btn{position:absolute;right:10px;top:9px;background:none;border:none;cursor:pointer;color:var(--tx3);font-size:14px}
+.btn-p{background:var(--p600);color:#fff;border:none;padding:9px 18px;border-radius:var(--r8);font-size:13px;font-weight:500;font-family:var(--f-body);cursor:pointer;transition:opacity .15s;width:100%}
+.btn-p:hover{opacity:.88}
+.btn-g{background:transparent;border:1px solid var(--bd2);color:var(--tx2);padding:6px 14px;border-radius:var(--r8);font-size:12px;font-family:var(--f-body);cursor:pointer;transition:all .12s}
+.btn-g:hover{background:var(--bg2);color:var(--tx)}
+.err{font-size:12px;color:var(--c600);margin-top:8px;margin-bottom:4px;display:none}
+.err.on{display:block}
+
+.app{max-width:920px;margin:0 auto;padding:1.5rem 1rem}
+.app-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--bd);flex-wrap:wrap;gap:10px}
+.app-title{font-family:var(--f-ui);font-size:20px;font-weight:700}
+.app-sub{font-size:13px;color:var(--tx2);margin-top:2px}
+.hd-r{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cur-user{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--bd);border-radius:99px;padding:5px 12px 5px 5px}
+.cur-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.cur-av.admin{background:#fef3c7;color:#92400e}
+.cur-av.user{background:var(--p50);color:var(--p800)}
+.cur-name{font-size:13px;font-weight:500}
+.cur-role{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:600}
+.cur-role.admin{background:#fef3c7;color:#92400e}
+.cur-role.user{background:var(--p50);color:var(--p800)}
+.nav-app{display:flex;gap:4px;background:var(--bg2);border-radius:var(--r12);padding:4px;border:1px solid var(--bd);flex-wrap:wrap;margin-bottom:1.25rem}
+.nb{font-family:var(--f-body);font-size:13px;font-weight:500;padding:6px 14px;border-radius:var(--r8);border:none;background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s}
+.nb:hover{background:var(--bg);color:var(--tx)}
+.nb.on{background:var(--bg);color:var(--p600);border:1px solid var(--bd2)}
+.view{display:none}
+.view.on{display:block}
+
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
+.sc{background:var(--bg2);border-radius:var(--r12);padding:1rem;text-align:center}
+.si{font-size:20px;margin-bottom:6px}
+.sv{font-family:var(--f-ui);font-size:22px;font-weight:700}
+.sl{font-size:12px;color:var(--tx2);margin-top:2px}
+.card{background:var(--bg);border:1px solid var(--bd);border-radius:var(--r16);padding:1rem 1.25rem}
+.sec{font-family:var(--f-ui);font-size:15px;font-weight:700;margin-bottom:10px}
+.pb-wrap{background:var(--bg2);border-radius:99px;height:8px;overflow:hidden}
+.pb{height:100%;border-radius:99px;background:var(--p600);transition:width .4s}
+.lv-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.lv-badge{font-family:var(--f-ui);font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--p50);color:var(--p800);border:1px solid var(--p200)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1rem}
+.ri{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.ri:last-child{border-bottom:none}
+.rd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.rn{font-size:13px;font-weight:500;flex:1}
+.rp{font-size:12px;color:var(--p600);font-weight:500}
+.rt{font-size:11px;color:var(--tx3)}
+
+.fc{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.chip{font-size:12px;padding:4px 12px;border-radius:99px;cursor:pointer;border:1px solid var(--bd2);background:transparent;color:var(--tx2);font-family:var(--f-body);transition:all .12s}
+.chip.on{background:var(--p600);color:#fff;border-color:var(--p600)}
+.tl{display:flex;flex-direction:column;gap:8px}
+.tc{background:var(--bg);border:1px solid var(--bd);border-radius:var(--r16);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;transition:border-color .15s}
+.tc:hover{border-color:var(--bd2)}
+.tc.done{opacity:.5}
+.chk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
+.chk.on{background:var(--t600);border-color:var(--t600)}
+.chk.on::after{content:'';display:block;width:6px;height:10px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-2px)}
+.ti{flex:1}
+.tn{font-size:14px;font-weight:500}
+.td{font-size:12px;color:var(--tx2);margin-top:2px}
+.tm{display:flex;gap:6px;margin-top:6px;align-items:center;flex-wrap:wrap}
+.tag{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500}
+.tag-training{background:var(--p50);color:var(--p800)}
+.tag-compliance{background:var(--a50);color:var(--a800)}
+.tag-leadership{background:var(--t50);color:var(--t800)}
+.tag-wellness{background:var(--g50);color:var(--g600)}
+.tag-culture{background:var(--c50);color:var(--c600)}
+.tp{font-family:var(--f-ui);font-size:16px;font-weight:700;color:var(--p600);flex-shrink:0;text-align:right}
+.tp small{display:block;font-size:10px;color:var(--tx3);font-weight:400;font-family:var(--f-body)}
+.db{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:500}
+.db-easy{background:var(--g50);color:var(--g600)}
+.db-medium{background:var(--a50);color:var(--a600)}
+.db-hard{background:var(--c50);color:var(--c600)}
+.dl{font-size:11px;color:var(--tx3)}
+.dl.urg{color:var(--c600);font-weight:500}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--tx3);font-size:16px;padding:4px;border-radius:var(--r4);transition:all .12s;flex-shrink:0}
+.del-btn:hover{background:var(--c50);color:var(--c600)}
+
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin-bottom:1.5rem;padding-top:1.5rem}
+.pi{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;max-width:140px}
+.pav{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--f-ui);font-size:15px;font-weight:700}
+.p1av{background:var(--p50);color:var(--p800)}
+.p2av{background:var(--t50);color:var(--t800)}
+.p3av{background:var(--a50);color:var(--a800)}
+.pn{font-size:13px;font-weight:500;text-align:center}
+.pp{font-size:12px;color:var(--tx2)}
+.pb2{width:100%;border-radius:var(--r8) var(--r8) 0 0;display:flex;align-items:center;justify-content:center}
+.p1b{height:80px;background:var(--p600)}
+.p2b{height:58px;background:var(--p200)}
+.p3b{height:42px;background:var(--bg3)}
+.pr{font-family:var(--f-ui);font-size:18px;font-weight:700;color:#fff}
+.p3b .pr{color:var(--tx2)}
+.lbl{display:flex;flex-direction:column;gap:6px}
+.lr{display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r12);padding:10px 14px}
+.lr.me{border-color:var(--p600);background:var(--p50)}
+.lrk{font-family:var(--f-ui);font-size:14px;font-weight:700;color:var(--tx3);width:20px;text-align:center}
+.lav{width:32px;height:32px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--tx2)}
+
+.bg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.bc{background:var(--bg);border:1px solid var(--bd);border-radius:var(--r16);padding:1.1rem;text-align:center}
+.bc.lk{opacity:.4;filter:grayscale(.7)}
+.bi{font-size:28px;margin-bottom:8px}
+.bn{font-size:13px;font-weight:500;margin-bottom:4px}
+.bs{font-size:11px;color:var(--tx2);line-height:1.4}
+.bq{font-size:10px;color:var(--tx3);margin-top:6px}
+
+.admin-banner{display:flex;align-items:center;gap:12px;background:#fef3c7;border:1px solid #fde68a;border-radius:var(--r12);padding:12px 16px;margin-bottom:1rem;font-size:13px;color:#92400e}
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.fg{margin-bottom:12px}
+.fl{font-size:12px;font-weight:500;color:var(--tx2);margin-bottom:4px;display:block}
+.al{display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto}
+.ar{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg2);border-radius:var(--r8)}
+.an{flex:1;font-size:13px;font-weight:500}
+.ap{font-family:var(--f-ui);font-size:14px;font-weight:700;color:var(--t600)}
+.am{font-size:11px;color:var(--tx3)}
+.user-mgmt{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto}
+.um-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg2);border-radius:var(--r12)}
+.um-info{flex:1}
+.um-name{font-size:14px;font-weight:500}
+.um-dept{font-size:11px;color:var(--tx3)}
+.um-pts{font-family:var(--f-ui);font-size:14px;font-weight:700;color:var(--p600)}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--t600);color:#fff;padding:10px 18px;border-radius:var(--r8);font-size:13px;font-weight:500;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;z-index:9999}
+.toast.on{opacity:1;transform:translateY(0)}
+
+@media(max-width:768px){
+  .floating-cards{display:none}
+  .steps::before{display:none}
+  .hero-h1{font-size:2.8rem}
+}
+@media(max-width:600px){
+  .sg{grid-template-columns:repeat(2,1fr)}
+  .two{grid-template-columns:1fr}
+  .ag{grid-template-columns:1fr}
+  .app-hd{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ LANDING PAGE ══════════ -->
+<div id="landing">
+
+<section class="hero">
+  <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+  <nav class="lnav">
+    <div class="lnav-logo">HR · 訓練激勵系統</div>
+    <div class="lnav-badge">v3.0 · 2026</div>
+  </nav>
+  <div class="hero-body">
+    <div class="eyebrow"><span class="eyebrow-line"></span>內部訓練 · 遊戲化學習</div>
+    <h1 class="hero-h1">學習，<br><em>值得被</em>慶祝。</h1>
+    <p class="hero-desc">把每一次訓練、每一個課程、每一份努力，轉化為可見的成就與積點。讓員工在成長的路上，感受到被看見的力量。</p>
+    <div class="hero-cta">
+      <button class="btn-main" onclick="enterLogin()">立即登入系統 →</button>
+      <button class="btn-ghost-l" onclick="document.getElementById('features-sec').scrollIntoView({behavior:'smooth'})">了解功能</button>
+    </div>
+  </div>
+  <div class="floating-cards">
+    <div class="fcard accent-card">
+      <div class="fcard-top"><span class="fcard-icon">⭐</span><span class="fcard-label">本週積點王</span></div>
+      <div class="fcard-val">2,840</div><div class="fcard-sub">林美華 · 人力資源部</div>
+      <div class="fcard-bar"><div class="fcard-fill" style="width:82%"></div></div>
+    </div>
+    <div class="fcard">
+      <div class="fcard-top"><span class="fcard-icon">🏆</span><span class="fcard-label">任務完成率</span></div>
+      <div class="fcard-val">73%</div><div class="fcard-sub">全公司平均</div>
+      <div class="fcard-bar"><div class="fcard-fill" style="width:73%"></div></div>
+    </div>
+    <div class="fcard">
+      <div class="fcard-top"><span class="fcard-icon">🚀</span><span class="fcard-label">最新解鎖</span></div>
+      <div class="fcard-val">💎</div><div class="fcard-sub">頂尖學員 · 張建國</div>
+    </div>
+  </div>
+</section>
+
+<div style="position:relative;z-index:5;border-top:1px solid rgba(244,241,235,.08);border-bottom:1px solid rgba(244,241,235,.08);padding:14px 0;overflow:hidden;background:var(--ink)">
+  <div class="ticker-track" id="ticker"></div>
+</div>
+
+<section class="features" id="features-sec">
+  <div class="features-header">
+    <div class="feat-eyebrow">系統功能</div>
+    <h2 class="feat-h2">每個功能，都為激勵而生。</h2>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-item"><div class="feat-num">01</div><div class="feat-icon-wrap" style="background:#f0edff">🎯</div><div class="feat-title">任務系統</div><div class="feat-desc">HR 可靈活新增各類訓練任務，設定積點與難度，員工完成即時獲得回饋。</div></div>
+    <div class="feat-item"><div class="feat-num">02</div><div class="feat-icon-wrap" style="background:#fef9e7">⭐</div><div class="feat-title">積點累積</div><div class="feat-desc">每完成一個任務立即獲得積點，積點可解鎖等級與徽章，讓成長看得見。</div></div>
+    <div class="feat-item"><div class="feat-num">03</div><div class="feat-icon-wrap" style="background:#e8f5ee">🏅</div><div class="feat-title">成就徽章</div><div class="feat-desc">9 種獨特徽章等你解鎖，從「快速起跑」到「訓練大師」，記錄每個里程碑。</div></div>
+    <div class="feat-item"><div class="feat-num">04</div><div class="feat-icon-wrap" style="background:#fdecea">🏆</div><div class="feat-title">排行榜</div><div class="feat-desc">即時排行榜點燃良性競爭，頒獎台視覺化呈現，讓每個人都想登上第一。</div></div>
+    <div class="feat-item"><div class="feat-num">05</div><div class="feat-icon-wrap" style="background:#fef3c7">🛡</div><div class="feat-title">管理後台</div><div class="feat-desc">HR 管理者專屬後台，可新增任務、手動頒點、管理帳號，一切盡在掌握。</div></div>
+    <div class="feat-item"><div class="feat-num">06</div><div class="feat-icon-wrap" style="background:#edf4ff">📊</div><div class="feat-title">個人儀表板</div><div class="feat-desc">每位員工都有專屬儀表板，追蹤積點、等級、近期完成，掌握自己的成長軌跡。</div></div>
+  </div>
+</section>
+
+<div class="stats-strip">
+  <div class="stat-item"><div class="stat-divider"></div><div class="stat-num" data-target="12">0</div><div class="stat-label">訓練任務類型</div></div>
+  <div class="stat-item"><div class="stat-divider"></div><div class="stat-num" data-target="9">0</div><div class="stat-label">成就徽章等級</div></div>
+  <div class="stat-item"><div class="stat-divider"></div><div class="stat-num" data-target="7">0</div><div class="stat-label">玩家等級階段</div></div>
+  <div class="stat-item"><div class="stat-divider"></div><div class="stat-num" data-target="5">0</div><div class="stat-label">任務類別分類</div></div>
+</div>
+
+<section class="how">
+  <div class="how-header"><div class="how-eyebrow">使用流程</div><h2 class="how-h2">三步上手，立刻開始</h2></div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-title">建立帳號</div><div class="step-desc">輸入姓名與部門，30 秒完成註冊，立即進入個人儀表板。</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-title">執行任務</div><div class="step-desc">瀏覽訓練任務清單，完成後打勾，積點即時入帳。</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-title">解鎖成就</div><div class="step-desc">累積積點解鎖等級與徽章，登上排行榜，讓努力被看見。</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-title">持續精進</div><div class="step-desc">HR 不斷更新任務，你不斷成長，形成良性的學習正循環。</div></div>
+  </div>
+</section>
+
+<section class="quote-section">
+  <div class="quote-bg-txt">LEARN</div>
+  <div class="quote-icon">✦</div>
+  <blockquote class="quote-text">「訓練不應該是義務，<strong>它應該是一種榮耀。</strong>」</blockquote>
+  <div class="quote-author">HR 訓練激勵系統 · 設計理念</div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-orb"></div>
+  <h2 class="cta-h2">準備好了嗎？<br><span>開始你的旅程。</span></h2>
+  <p class="cta-sub">加入你的同事，一起在訓練中成長、競爭、慶祝。</p>
+  <div class="cta-btn-wrap"><button class="btn-main-lg" onclick="enterLogin()">立即進入系統 →</button></div>
+</section>
+
+<footer>
+  <div class="footer-logo">HR · 訓練激勵系統</div>
+  <div class="footer-copy">© 2026 內部使用 · All rights reserved</div>
+</footer>
+</div>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div class="screen" id="s-login">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <button onclick="showLanding()" style="background:none;border:none;cursor:pointer;color:var(--tx3);font-size:18px;padding:0;line-height:1">←</button>
+        <div class="login-logo">HR 訓練激勵系統</div>
+      </div>
+      <div class="login-sub">選擇身分登入</div>
+      <div class="tab-row">
+        <button class="tab-btn on" id="tab-emp" onclick="switchTab('emp')">👤 員工登入</button>
+        <button class="tab-btn" id="tab-adm" onclick="switchTab('adm')">🛡 管理者登入</button>
+      </div>
+      <div id="pane-emp">
+        <div class="user-list" id="user-list"></div>
+        <div class="divider2"><div class="div-line2"></div><div class="div-txt2">建立新帳號</div><div class="div-line2"></div></div>
+        <input class="fi" id="new-name" placeholder="姓名" />
+        <select class="fs" id="new-dept">
+          <option value="">選擇部門</option>
+          <option>人力資源部</option><option>業務開發部</option><option>行銷企劃部</option>
+          <option>財務管理部</option><option>產品設計部</option><option>技術研發部</option>
+          <option>客戶服務部</option><option>法務合規部</option>
+        </select>
+        <button class="btn-p" onclick="createUser()">建立帳號並登入</button>
+      </div>
+      <div id="pane-adm" style="display:none">
+        <div style="font-size:13px;color:var(--tx2);margin-bottom:12px">請輸入管理者密碼登入</div>
+        <div class="adm-wrap"><input class="fi" id="adm-pwd" type="password" placeholder="管理者密碼" /><button class="eye-btn" onclick="togglePwd()">👁</button></div>
+        <div class="err" id="adm-err">密碼錯誤，請重試</div>
+        <button class="btn-p" style="margin-top:10px" onclick="adminLogin()">登入管理後台</button>
+        <div style="font-size:11px;color:var(--tx3);margin-top:10px;text-align:center">預設密碼：<strong>hr2024</strong>（可在管理後台修改）</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ APP ══════════ -->
+<div class="screen" id="s-app">
+<div class="app">
+  <div class="app-hd">
+    <div><div class="app-title">HR 訓練激勵系統</div><div class="app-sub">員工成長與積點追蹤平台</div></div>
+    <div class="hd-r">
+      <div class="cur-user"><div class="cur-av" id="cur-av"></div><div class="cur-name" id="cur-name"></div><div class="cur-role" id="cur-role"></div></div>
+      <button class="btn-g" onclick="logout()">切換帳號</button>
+      <button class="btn-g" onclick="showLanding()">🏠 首頁</button>
+    </div>
+  </div>
+  <nav class="nav-app">
+    <button class="nb on" onclick="sv('dashboard',this)">總覽</button>
+    <button class="nb" onclick="sv('tasks',this)">任務</button>
+    <button class="nb" onclick="sv('leaderboard',this)">排行榜</button>
+    <button class="nb" onclick="sv('badges',this)">徽章</button>
+    <button class="nb admin-only" onclick="sv('admin',this)">⚙ 管理後台</button>
+  </nav>
+
+  <div id="v-dashboard" class="view on">
+    <div class="sg">
+      <div class="sc"><div class="si">⭐</div><div class="sv" id="s-pts">0</div><div class="sl">累積積點</div></div>
+      <div class="sc"><div class="si">✅</div><div class="sv" id="s-done">0</div><div class="sl">完成任務</div></div>
+      <div class="sc"><div class="si">🏅</div><div class="sv" id="s-bdg">0</div><div class="sl">獲得徽章</div></div>
+      <div class="sc"><div class="si">📈</div><div class="sv" id="s-rank">—</div><div class="sl">排行名次</div></div>
+    </div>
+    <div class="card" style="margin-bottom:1rem">
+      <div class="lv-info"><span class="lv-badge" id="lv-badge">Lv.1 新進學員</span><span style="font-size:12px;color:var(--tx2)" id="xp-txt">0/500 XP</span></div>
+      <div class="pb-wrap"><div class="pb" id="xp-bar" style="width:0%"></div></div>
+      <div style="font-size:11px;color:var(--tx3);margin-top:6px" id="lv-hint"></div>
+    </div>
+    <div class="two">
+      <div class="card"><div class="sec">近期完成</div><div id="recent-list"></div></div>
+      <div class="card"><div class="sec">推薦下一步</div><div id="next-tasks"></div></div>
+    </div>
+  </div>
+
+  <div id="v-tasks" class="view">
+    <div class="fc">
+      <button class="chip on" onclick="ft('all',this)">全部</button>
+      <button class="chip" onclick="ft('training',this)">訓練課程</button>
+      <button class="chip" onclick="ft('compliance',this)">法規遵循</button>
+      <button class="chip" onclick="ft('leadership',this)">領導力</button>
+      <button class="chip" onclick="ft('wellness',this)">身心健康</button>
+      <button class="chip" onclick="ft('culture',this)">企業文化</button>
+    </div>
+    <div class="tl" id="tasks-list"></div>
+  </div>
+
+  <div id="v-leaderboard" class="view">
+    <div class="podium" id="podium"></div>
+    <div class="card"><div class="sec" style="margin-bottom:10px">完整排名</div><div class="lbl" id="lb-list"></div></div>
+  </div>
+
+  <div id="v-badges" class="view">
+    <div style="font-size:13px;color:var(--tx2);margin-bottom:1.25rem">完成特定條件解鎖徽章，展示你的訓練成就。</div>
+    <div class="bg-grid" id="badges-grid"></div>
+  </div>
+
+  <div id="v-admin" class="view">
+    <div class="admin-banner">🛡 管理者模式 — 以下功能僅限管理者操作</div>
+    <div class="ag">
+      <div class="card">
+        <div class="sec" style="margin-bottom:1rem">新增任務</div>
+        <div class="fg"><label class="fl">任務名稱</label><input class="fi" id="nt-name" placeholder="例：資訊安全認知訓練" style="margin-bottom:0"></div>
+        <div class="fg"><label class="fl">說明</label><input class="fi" id="nt-desc" placeholder="簡短描述任務內容" style="margin-bottom:0"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="fg"><label class="fl">積點</label><input class="fi" id="nt-pts" type="number" placeholder="100" style="margin-bottom:0"></div>
+          <div class="fg"><label class="fl">類別</label><select class="fs" id="nt-cat" style="margin-bottom:0"><option value="training">訓練課程</option><option value="compliance">法規遵循</option><option value="leadership">領導力</option><option value="wellness">身心健康</option><option value="culture">企業文化</option></select></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="fg"><label class="fl">難度</label><select class="fs" id="nt-diff" style="margin-bottom:0"><option value="easy">簡單</option><option value="medium">中等</option><option value="hard">困難</option></select></div>
+          <div class="fg"><label class="fl">截止日</label><input class="fi" id="nt-dl" type="date" style="margin-bottom:0"></div>
+        </div>
+        <button class="btn-p" style="margin-top:4px" onclick="addTask()">新增任務</button>
+        <div class="sec" style="margin:1.25rem 0 10px">現有任務管理</div>
+        <div id="task-mgmt" style="display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="card">
+          <div class="sec" style="margin-bottom:1rem">手動頒發積點</div>
+          <div class="fg"><label class="fl">選擇員工</label><select class="fs" id="aw-uid" style="margin-bottom:0"></select></div>
+          <div class="fg" style="margin-top:8px"><label class="fl">積點數量</label><input class="fi" id="aw-pts" type="number" placeholder="50" style="margin-bottom:0"></div>
+          <div class="fg"><label class="fl">原因說明</label><input class="fi" id="aw-reason" placeholder="例：活動籌備貢獻獎" style="margin-bottom:0"></div>
+          <button class="btn-p" style="margin-top:4px" onclick="awardPts()">頒發積點</button>
+          <div class="sec" style="margin:1rem 0 8px">頒發記錄</div>
+          <div class="al" id="aw-log"></div>
+        </div>
+        <div class="card">
+          <div class="sec" style="margin-bottom:1rem">員工帳號管理</div>
+          <div class="user-mgmt" id="user-mgmt"></div>
+        </div>
+        <div class="card">
+          <div class="sec" style="margin-bottom:1rem">修改管理者密碼</div>
+          <input class="fi" id="new-pwd1" type="password" placeholder="新密碼">
+          <input class="fi" id="new-pwd2" type="password" placeholder="確認新密碼">
+          <button class="btn-p" onclick="changePwd()">更新密碼</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STORAGE ──
+const LS={get:k=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch{return null}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const ADMIN_PWD_KEY='hr_admin_pwd',DEFAULT_PWD='hr2024';
+const LV_TH=[0,500,1200,2500,4500,7000,10000];
+const LV_NM=['新進學員','初級學員','進階學員','資深學員','專業導師','卓越導師','訓練大師'];
+const DEF_TASKS=[
+  {id:'t1',name:'新人教育訓練模組 1',desc:'公司文化與組織架構介紹',pts:100,cat:'training',diff:'easy',deadline:'2026-04-30'},
+  {id:'t2',name:'新人教育訓練模組 2',desc:'工作流程與系統操作',pts:150,cat:'training',diff:'easy',deadline:'2026-04-30'},
+  {id:'t3',name:'新人教育訓練模組 3',desc:'部門協作與溝通規範',pts:200,cat:'training',diff:'medium',deadline:'2026-05-10'},
+  {id:'t4',name:'職場安全法規測驗',desc:'通過線上測驗得分需達 80 分以上',pts:150,cat:'compliance',diff:'medium',deadline:'2026-05-01'},
+  {id:'t5',name:'DEI 多元共融課程',desc:'完成多元、平等與共融線上課程',pts:120,cat:'culture',diff:'easy',deadline:'2026-05-15'},
+  {id:'t6',name:'領導力工作坊出席',desc:'參與全天領導力工作坊並完成反思報告',pts:300,cat:'leadership',diff:'hard',deadline:'2026-05-20'},
+  {id:'t7',name:'資訊安全認知測驗',desc:'完成資安意識訓練並通過測驗',pts:180,cat:'compliance',diff:'medium',deadline:'2026-05-31'},
+  {id:'t8',name:'跨部門交流分享',desc:'主持或出席一場跨部門知識分享',pts:250,cat:'culture',diff:'medium',deadline:'2026-06-01'},
+  {id:'t9',name:'正念冥想體驗課程',desc:'完成兩堂正念冥想入門課程',pts:80,cat:'wellness',diff:'easy',deadline:'2026-06-01'},
+  {id:'t10',name:'中階管理實務課程',desc:'完成 8 小時管理技能訓練',pts:400,cat:'leadership',diff:'hard',deadline:'2026-06-15'},
+  {id:'t11',name:'個人發展計畫提交',desc:'與主管完成 IDP 面談並提交計畫',pts:220,cat:'training',diff:'medium',deadline:'2026-05-31'},
+  {id:'t12',name:'健康生活挑戰 30 天',desc:'完成每日健康打卡滿 25 天',pts:150,cat:'wellness',diff:'medium',deadline:'2026-06-30'},
+];
+const BADGE_DEFS=[
+  {id:'b1',icon:'🚀',name:'快速起跑',desc:'完成前 3 個任務',check:u=>u.doneIds.length>=3},
+  {id:'b2',icon:'📚',name:'知識探索者',desc:'完成 5 個訓練課程任務',check:(u,t)=>t.filter(x=>x.cat==='training'&&u.doneIds.includes(x.id)).length>=5},
+  {id:'b3',icon:'⚖️',name:'法遵先鋒',desc:'完成所有法規遵循任務',check:(u,t)=>t.filter(x=>x.cat==='compliance').every(x=>u.doneIds.includes(x.id))},
+  {id:'b4',icon:'🌟',name:'積點新星',desc:'累積超過 1,000 積點',check:u=>u.pts>=1000},
+  {id:'b5',icon:'👑',name:'領袖氣質',desc:'完成 3 個領導力任務',check:(u,t)=>t.filter(x=>x.cat==='leadership'&&u.doneIds.includes(x.id)).length>=3},
+  {id:'b6',icon:'💪',name:'健康大使',desc:'完成所有身心健康任務',check:(u,t)=>t.filter(x=>x.cat==='wellness').every(x=>u.doneIds.includes(x.id))},
+  {id:'b7',icon:'🤝',name:'文化推廣者',desc:'完成 3 個企業文化任務',check:(u,t)=>t.filter(x=>x.cat==='culture'&&u.doneIds.includes(x.id)).length>=3},
+  {id:'b8',icon:'🏆',name:'訓練大師',desc:'完成全部任務',check:(u,t)=>t.every(x=>u.doneIds.includes(x.id))},
+  {id:'b9',icon:'💎',name:'頂尖學員',desc:'排行榜積點第一名',check:()=>false},
+];
+
+let CU=null,IS_ADMIN=false,CF='all';
+const loadT=()=>LS.get('hr_tasks')||[...DEF_TASKS];
+const saveT=t=>LS.set('hr_tasks',t);
+const loadU=()=>LS.get('hr_users')||{};
+const saveU=u=>LS.set('hr_users',u);
+const loadL=()=>LS.get('hr_log')||[];
+const saveL=l=>LS.set('hr_log',l);
+const getPwd=()=>LS.get(ADMIN_PWD_KEY)||DEFAULT_PWD;
+const catL=c=>({training:'訓練課程',compliance:'法規遵循',leadership:'領導力',wellness:'身心健康',culture:'企業文化'}[c]||c);
+const diffL=d=>({easy:'簡單',medium:'中等',hard:'困難'}[d]||d);
+function getLv(pts){let lv=0;for(let i=0;i<LV_TH.length;i++)if(pts>=LV_TH[i])lv=i;const next=lv<LV_TH.length-1?LV_TH[lv+1]:null;const pct=next?Math.round(((pts-LV_TH[lv])/(next-LV_TH[lv]))*100):100;return{lv:lv+1,name:LV_NM[lv],pct,next}}
+function getUnlocked(u){const t=loadT();return BADGE_DEFS.filter(b=>b.check(u,t))}
+
+// ── NAVIGATION ──
+function showLanding(){document.getElementById('landing').style.display='';document.getElementById('s-login').classList.remove('on');document.getElementById('s-app').classList.remove('on');window.scrollTo(0,0)}
+function enterLogin(){document.getElementById('landing').style.display='none';document.getElementById('s-login').classList.add('on');renderLogin()}
+function switchTab(t){document.getElementById('tab-emp').classList.toggle('on',t==='emp');document.getElementById('tab-adm').classList.toggle('on',t==='adm');document.getElementById('pane-emp').style.display=t==='emp'?'block':'none';document.getElementById('pane-adm').style.display=t==='adm'?'block':'none'}
+function togglePwd(){const f=document.getElementById('adm-pwd');f.type=f.type==='password'?'text':'password'}
+function renderLogin(){
+  const users=loadU(),arr=Object.values(users);
+  document.getElementById('user-list').innerHTML=arr.length?arr.map(u=>'<button class="user-btn" onclick="loginUser(\''+u.id+'\')"><div class="u-av user">'+u.name[0]+'</div><div><div class="u-name">'+u.name+'</div><div class="u-meta">'+u.dept+' · '+u.pts.toLocaleString()+' 積點</div></div><span class="role-tag user">員工</span></button>').join(''):'<div style="font-size:13px;color:var(--tx3);text-align:center;padding:8px 0">尚無員工帳號，請建立第一個帳號</div>';
+}
+function createUser(){
+  const name=document.getElementById('new-name').value.trim();
+  const dept=document.getElementById('new-dept').value;
+  if(!name||!dept){toast('⚠ 請填寫姓名與部門');return;}
+  const users=loadU(),id='u_'+Date.now();
+  users[id]={id,name,dept,pts:0,doneIds:[],history:[]};saveU(users);loginUser(id);
+}
+function loginUser(id){const users=loadU();CU=users[id];IS_ADMIN=false;if(!CU)return;enterApp()}
+function adminLogin(){const pwd=document.getElementById('adm-pwd').value,err=document.getElementById('adm-err');if(pwd!==getPwd()){err.classList.add('on');return}err.classList.remove('on');IS_ADMIN=true;CU={id:'__admin__',name:'管理者',dept:'HR管理',pts:0,doneIds:[],history:[]};enterApp()}
+function enterApp(){
+  document.getElementById('s-login').classList.remove('on');document.getElementById('s-app').classList.add('on');
+  document.getElementById('cur-av').textContent=IS_ADMIN?'🛡':CU.name[0];
+  document.getElementById('cur-av').className='cur-av '+(IS_ADMIN?'admin':'user');
+  document.getElementById('cur-name').textContent=CU.name;
+  document.getElementById('cur-role').textContent=IS_ADMIN?'管理者':'員工';
+  document.getElementById('cur-role').className='cur-role '+(IS_ADMIN?'admin':'user');
+  document.querySelectorAll('.admin-only').forEach(el=>el.style.display=IS_ADMIN?'':'none');
+  sv('dashboard',document.querySelector('.nb'));
+  if(IS_ADMIN){renderAdminUsers();renderTaskMgmt();renderAwLog()}
+  updateDash();renderTasks();renderLB();renderBadges();
+}
+function logout(){CU=null;IS_ADMIN=false;document.getElementById('s-app').classList.remove('on');document.getElementById('s-login').classList.add('on');document.getElementById('adm-pwd').value='';renderLogin()}
+
+function sv(name,btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('v-'+name).classList.add('on');if(btn)btn.classList.add('on');
+  if(name==='leaderboard')renderLB();if(name==='badges')renderBadges();
+  if(name==='admin'){renderAdminUsers();renderTaskMgmt();renderAwLog()}
+}
+
+function updateDash(){
+  if(!CU||IS_ADMIN)return;
+  const u=CU,li=getLv(u.pts),users=loadU(),sorted=Object.values(users).sort((a,b)=>b.pts-a.pts);
+  document.getElementById('s-pts').textContent=u.pts.toLocaleString();
+  document.getElementById('s-done').textContent=u.doneIds.length;
+  document.getElementById('s-bdg').textContent=getUnlocked(u).length;
+  const rank=sorted.findIndex(x=>x.id===u.id)+1;
+  document.getElementById('s-rank').textContent=rank?'#'+rank:'—';
+  document.getElementById('lv-badge').textContent='Lv.'+li.lv+' '+li.name;
+  document.getElementById('xp-txt').textContent=u.pts.toLocaleString()+' / '+(li.next?li.next.toLocaleString():'MAX')+' XP';
+  document.getElementById('xp-bar').style.width=li.pct+'%';
+  document.getElementById('lv-hint').textContent=li.next?'還需 '+(li.next-u.pts).toLocaleString()+' 點升至 Lv.'+(li.lv+1)+' '+LV_NM[li.lv]:'🎉 已達最高等級！';
+  const hist=(u.history||[]).slice(-4).reverse(),dots=['#0F6E56','#534AB7','#EF9F27','#F0997B'];
+  document.getElementById('recent-list').innerHTML=hist.length?hist.map((h,i)=>'<div class="ri"><div class="rd" style="background:'+dots[i%4]+'"></div><div class="rn">'+h.name+'</div><div><div class="rp">+'+h.pts+'pts</div><div class="rt">'+h.time+'</div></div></div>').join(''):'<div style="font-size:13px;color:var(--tx3);padding:4px 0">尚未完成任何任務</div>';
+  const tasks=loadT(),next=tasks.filter(t=>!u.doneIds.includes(t.id)).slice(0,3);
+  document.getElementById('next-tasks').innerHTML=next.length?next.map(t=>'<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)"><span class="tag tag-'+t.cat+'">'+catL(t.cat)+'</span><div style="flex:1;font-size:13px;font-weight:500">'+t.name+'</div><div style="font-family:var(--f-ui);font-size:13px;font-weight:700;color:var(--p600)">'+t.pts+'pt</div></div>').join(''):'<div style="font-size:13px;color:var(--tx3);padding-top:8px">🎉 所有任務已完成！</div>';
+}
+
+function ft(cat,btn){CF=cat;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));btn.classList.add('on');renderTasks()}
+function renderTasks(){
+  if(!CU)return;
+  const u=CU,tasks=loadT(),today=new Date();
+  const filtered=tasks.filter(t=>CF==='all'||t.cat===CF);
+  document.getElementById('tasks-list').innerHTML=filtered.map(t=>{
+    const done=!IS_ADMIN&&u.doneIds.includes(t.id),dl=t.deadline?new Date(t.deadline):null,urg=dl&&!done&&(dl-today)/86400000<5;
+    const chk=IS_ADMIN?'<div style="width:22px;flex-shrink:0"></div>':'<div class="chk '+(done?'on':'')+'" onclick="toggleTask(\''+t.id+'\')"></div>';
+    return '<div class="tc '+(done?'done':'')+'">'+chk+'<div class="ti"><div class="tn">'+t.name+'</div><div class="td">'+t.desc+'</div><div class="tm"><span class="tag tag-'+t.cat+'">'+catL(t.cat)+'</span><span class="db db-'+t.diff+'">'+diffL(t.diff)+'</span>'+(t.deadline?'<span class="dl '+(urg?'urg':'')+'">截止 '+t.deadline+'</span>':'')+'</div></div><div class="tp">'+t.pts+'<small>積點</small></div></div>';
+  }).join('');
+}
+function toggleTask(tid){
+  if(!CU||IS_ADMIN)return;
+  const users=loadU(),u=users[CU.id],tasks=loadT(),t=tasks.find(x=>x.id===tid);if(!t)return;
+  if(u.doneIds.includes(tid)){u.doneIds=u.doneIds.filter(x=>x!==tid);u.pts=Math.max(0,u.pts-t.pts);u.history=(u.history||[]).filter(h=>h.tid!==tid);toast('↩ 已取消「'+t.name+'」')}
+  else{u.doneIds.push(tid);u.pts+=t.pts;const d=new Date(),ts=d.toLocaleDateString('zh-TW',{month:'numeric',day:'numeric'});(u.history=u.history||[]).push({tid,name:t.name,pts:t.pts,time:ts});toast('✅ 完成「'+t.name+'」+'+t.pts+' 積點！')}
+  users[u.id]=u;saveU(users);CU=u;updateDash();renderTasks();
+}
+
+function renderLB(){
+  const users=loadU(),sorted=Object.values(users).sort((a,b)=>b.pts-a.pts);
+  if(!sorted.length){document.getElementById('podium').innerHTML='<div style="font-size:13px;color:var(--tx3);padding:1rem">尚無資料</div>';document.getElementById('lb-list').innerHTML='';return}
+  const aCls=['p2av','p1av','p3av'],bCls=['p2b','p1b','p3b'],rl=['2','1','3'];
+  const top=sorted.length>=2?[sorted[1],sorted[0],sorted[2]].filter(Boolean):[sorted[0]];
+  document.getElementById('podium').innerHTML=top.map((p,i)=>{const ri=sorted.length===1?1:i;return'<div class="pi"><div class="pav '+aCls[ri]+'">'+p.name[0]+'</div><div class="pn">'+p.name+'</div><div class="pp">'+p.pts.toLocaleString()+' pts</div><div class="pb2 '+bCls[ri]+'"><span class="pr">'+rl[ri]+'</span></div></div>'}).join('');
+  document.getElementById('lb-list').innerHTML=sorted.map((p,i)=>'<div class="lr '+(!IS_ADMIN&&CU&&p.id===CU.id?'me':'')+'"><div class="lrk">'+(i+1)+'</div><div class="lav">'+p.name[0]+'</div><div style="flex:1"><div style="font-size:14px;font-weight:500">'+p.name+(!IS_ADMIN&&CU&&p.id===CU.id?' <span style="font-size:11px;color:var(--p600)">(我)</span>':'')+'</div><div style="font-size:11px;color:var(--tx3)">'+p.dept+'</div></div><div style="text-align:right"><div style="font-family:var(--f-ui);font-size:15px;font-weight:700;color:var(--p600)">'+p.pts.toLocaleString()+'</div><div style="font-size:11px;color:var(--tx3)">'+p.doneIds.length+' 任務</div></div></div>').join('');
+}
+
+function renderBadges(){
+  if(!CU||IS_ADMIN){document.getElementById('badges-grid').innerHTML='<div style="font-size:13px;color:var(--tx3)">請以員工身分登入查看徽章</div>';return}
+  const set=new Set(getUnlocked(CU).map(b=>b.id));
+  document.getElementById('badges-grid').innerHTML=BADGE_DEFS.map(b=>'<div class="bc '+(set.has(b.id)?'':'lk')+'"><div class="bi">'+b.icon+'</div><div class="bn">'+b.name+'</div><div class="bs">'+b.desc+'</div><div class="bq">'+(set.has(b.id)?'✓ 已解鎖':b.desc)+'</div></div>').join('');
+}
+
+function renderAdminUsers(){
+  const users=loadU(),arr=Object.values(users);
+  document.getElementById('aw-uid').innerHTML=arr.map(u=>'<option value="'+u.id+'">'+u.name+' ('+u.dept+')</option>').join('')||'<option>尚無員工</option>';
+  document.getElementById('user-mgmt').innerHTML=arr.length?arr.map(u=>'<div class="um-row"><div class="u-av user" style="width:32px;height:32px;font-size:12px;flex-shrink:0">'+u.name[0]+'</div><div class="um-info"><div class="um-name">'+u.name+'</div><div class="um-dept">'+u.dept+'</div></div><div class="um-pts">'+u.pts.toLocaleString()+'</div><button class="btn-g" style="font-size:11px;padding:4px 10px;color:var(--c600)" onclick="deleteUser(\''+u.id+'\')">刪除</button></div>').join(''):'<div style="font-size:13px;color:var(--tx3)">尚無員工帳號</div>';
+}
+function renderTaskMgmt(){
+  const tasks=loadT();
+  document.getElementById('task-mgmt').innerHTML=tasks.map(t=>'<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg2);border-radius:var(--r8)"><span class="tag tag-'+t.cat+'" style="flex-shrink:0">'+catL(t.cat)+'</span><div style="flex:1;font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+t.name+'</div><span style="font-family:var(--f-ui);font-size:12px;font-weight:700;color:var(--p600);flex-shrink:0">'+t.pts+'pt</span><button class="del-btn" onclick="deleteTask(\''+t.id+'\')">🗑</button></div>').join('');
+}
+function renderAwLog(){
+  const log=loadL();
+  document.getElementById('aw-log').innerHTML=log.slice(-10).reverse().map(r=>'<div class="ar"><div><div class="an">'+r.name+'</div><div class="am">'+r.reason+'</div></div><div class="ap">+'+r.pts+'</div></div>').join('')||'<div style="font-size:13px;color:var(--tx3)">尚無記錄</div>';
+}
+function addTask(){
+  const name=document.getElementById('nt-name').value.trim(),desc=document.getElementById('nt-desc').value.trim();
+  const pts=parseInt(document.getElementById('nt-pts').value)||100,cat=document.getElementById('nt-cat').value;
+  const diff=document.getElementById('nt-diff').value,deadline=document.getElementById('nt-dl').value;
+  if(!name){toast('⚠ 請輸入任務名稱');return}
+  const tasks=loadT();tasks.push({id:'t_'+Date.now(),name,desc,pts,cat,diff,deadline});saveT(tasks);
+  document.getElementById('nt-name').value='';document.getElementById('nt-desc').value='';document.getElementById('nt-pts').value='';
+  toast('✅ 已新增任務「'+name+'」');renderTaskMgmt();renderTasks();
+}
+function deleteTask(id){
+  if(!confirm('確定刪除此任務？'))return;
+  const tasks=loadT().filter(t=>t.id!==id);saveT(tasks);
+  const users=loadU();Object.values(users).forEach(u=>{u.doneIds=u.doneIds.filter(x=>x!==id)});saveU(users);
+  toast('🗑 任務已刪除');renderTaskMgmt();renderTasks();
+}
+function deleteUser(id){
+  if(!confirm('確定刪除此員工帳號？'))return;
+  const users=loadU();delete users[id];saveU(users);toast('🗑 帳號已刪除');renderAdminUsers();renderLB();
+}
+function awardPts(){
+  const uid=document.getElementById('aw-uid').value,pts=parseInt(document.getElementById('aw-pts').value);
+  const reason=document.getElementById('aw-reason').value.trim()||'特別貢獻';
+  if(!pts||pts<1){toast('⚠ 請輸入積點數量');return}
+  const users=loadU();if(!users[uid]){toast('⚠ 找不到員工');return}
+  users[uid].pts+=pts;saveU(users);const log=loadL();log.push({name:users[uid].name,reason,pts});saveL(log);
+  document.getElementById('aw-pts').value='';document.getElementById('aw-reason').value='';
+  toast('🎁 已頒發 '+pts+' 積點給 '+users[uid].name);renderAwLog();renderLB();
+}
+function changePwd(){
+  const p1=document.getElementById('new-pwd1').value,p2=document.getElementById('new-pwd2').value;
+  if(!p1){toast('⚠ 請輸入新密碼');return}if(p1!==p2){toast('⚠ 兩次密碼不一致');return}if(p1.length<4){toast('⚠ 密碼至少 4 個字元');return}
+  LS.set(ADMIN_PWD_KEY,p1);document.getElementById('new-pwd1').value='';document.getElementById('new-pwd2').value='';toast('✅ 管理者密碼已更新');
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2600)}
+
+// ── LANDING SCRIPTS ──
+const tickerItems=['任務系統','積點累積','成就徽章','排行榜競技','等級晉升','管理後台','多人帳號','資料儲存','跨部門競賽','個人儀表板','徽章解鎖','訓練激勵'];
+const track=document.getElementById('ticker');
+const doubled=[...tickerItems,...tickerItems];
+track.innerHTML=doubled.map(t=>'<span class="ticker-item"><span class="ticker-dot"></span>'+t+'</span>').join('');
+
+const counters=document.querySelectorAll('[data-target]');
+const cObs=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(!entry.isIntersecting)return;const el=entry.target,target=parseInt(el.dataset.target);let cur=0;const step=Math.ceil(target/30);const timer=setInterval(()=>{cur=Math.min(cur+step,target);el.textContent=cur;if(cur>=target)clearInterval(timer)},40);cObs.unobserve(el)})},{threshold:.5});
+counters.forEach(c=>cObs.observe(c));
+
+const reveals=document.querySelectorAll('.feat-item,.step,.stat-item');
+const rObs=new IntersectionObserver(entries=>{entries.forEach((entry,i)=>{if(entry.isIntersecting){entry.target.style.cssText='opacity:0;transform:translateY(20px)';requestAnimationFrame(()=>{entry.target.style.cssText='opacity:1;transform:translateY(0);transition:opacity .5s '+(i*.05)+'s ease,transform .5s '+(i*.05)+'s ease'});rObs.unobserve(entry.target)}})},{threshold:.15});
+reveals.forEach(el=>rObs.observe(el));
+</script>
+</body>
+</html>
